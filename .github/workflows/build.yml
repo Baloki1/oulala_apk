@@ -1,0 +1,39 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Unzip project
+      run: |
+        unzip oulala_android.zip -d project_folder
+        cd project_folder
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential git python3-dev ccache libffi-dev libssl-dev zlib1g-dev python3-pip
+        pip install --upgrade pip cython==0.29.37 buildozer
+
+    - name: Build with Buildozer
+      working-directory: project_folder
+      run: |
+        buildozer -v android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: project_folder/bin/*.apk
