@@ -18,8 +18,7 @@ jobs:
 
     - name: Unzip project
       run: |
-        unzip oulala_android.zip -d project_folder
-        cd project_folder
+        python -c "import zipfile; zipfile.ZipFile('oulala_android.zip', 'r').extractall('project_folder')"
 
     - name: Install dependencies
       run: |
